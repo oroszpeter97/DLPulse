@@ -2,7 +2,7 @@
 
 namespace DLPulse.Helper;
 
-public class ProcessRunner
+public static class ProcessRunner
 {
     public static List<string> RunProcess(string fileName, string arguments)
     {

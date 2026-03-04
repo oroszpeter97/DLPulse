@@ -1,20 +1,12 @@
-﻿using System;
-using System.IO;
+﻿using DLPulse.Model;
 using System.Text.Json;
 
 namespace DLPulse.Settings;
 
-public partial class GlobalSettings
+internal class SingleDownloadPageSettings
 {
-    public string? ExecutablePath { get; set; }
-
-    public string? WorkingDirectory { get; set; }
-
-    public GlobalSettings()
-    {
-        ExecutablePath = null;
-        WorkingDirectory = null;
-    }
+    public string? URLText { get; set; }
+    public VideoMetadata? LastFetchedMetadata { get; set; }
 
     private static string GetSettingsPath()
     {
@@ -22,7 +14,7 @@ public partial class GlobalSettings
         string dir = Path.Combine(appData, "DLPulse");
         if (!Directory.Exists(dir))
             Directory.CreateDirectory(dir);
-        return Path.Combine(dir, "settings.json");
+        return Path.Combine(dir, "singleDownloadPageSettings.json");
     }
 
     public void Load()
@@ -31,20 +23,19 @@ public partial class GlobalSettings
         if (File.Exists(path))
         {
             var json = File.ReadAllText(path);
-            var loaded = JsonSerializer.Deserialize<GlobalSettings>(json);
+            var loaded = JsonSerializer.Deserialize<SingleDownloadPageSettings>(json);
             if (loaded != null)
             {
-                ExecutablePath = loaded.ExecutablePath;
-                WorkingDirectory = loaded.WorkingDirectory;
+                URLText = loaded.URLText;
+                LastFetchedMetadata = loaded.LastFetchedMetadata;
             }
         }
     }
 
-    public void Save() 
+    public void Save()
     {
         string path = GetSettingsPath();
         var json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(path, json);
     }
 }
-
